@@ -1,8 +1,14 @@
 FROM node:20-alpine
 
-# Installation des dépendances système nécessaires pour Prisma sur Alpine
-# openssl1.1-compat est crucial ici
-RUN apk add --no-cache openssl openssl1.1-compat libc6-compat
+# On ajoute le dépôt "edge/community" pour avoir accès aux compatibilités OpenSSL
+# et on force l'installation de libressl ou openssl selon les besoins de Prisma
+RUN apk add --no-cache \
+    openssl \
+    libc6-compat \
+    libcrypto1.1 \
+    libssl1.1 || \
+    (echo "http://dl-cdn.alpinelinux.org/alpine/v3.16/main" >> /etc/apk/repositories && \
+     apk add --no-cache libssl1.1)
 
 WORKDIR /app
 
@@ -11,8 +17,7 @@ RUN npm install
 
 COPY . .
 
-# On force Prisma à générer le moteur pour 'linux-musl' (spécifique à Alpine)
-# et on s'assure que le client est généré dans le bon environnement
+# Génération du client Prisma
 RUN npx prisma generate
 
 EXPOSE 3001
