@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # Base de données
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: pilot
+      POSTGRES_PASSWORD: securepassword
+      POSTGRES_DB: logbook
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - flight_net
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager] # Pour la persistance des données simple
+
+  # Backend API
+  api:
+    image: logbook-backend:latest # Remplacez par votre_user/logbook-backend
+    ports:
+      - "3001:3001"
+    environment:
+      # Connexion interne Docker vers le service 'db'
+      DATABASE_URL: "postgresql://pilot:securepassword@db:5432/logbook?schema=public"
+    networks:
+      - flight_net
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+    depends_on:
+      - db
+
+  # Frontend Web
+  web:
+    image: logbook-frontend:latest # Remplacez par votre_user/logbook-frontend
+    ports:
+      - "80:3000"
+    networks:
+      - flight_net
+    deploy:
+      replicas: 2
+
+networks:
+  flight_net:
+    driver: overlay
+
+volumes:
+  db_data:

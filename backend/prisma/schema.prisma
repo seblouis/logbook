@@ -1,0 +1,41 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+model Aircraft {
+  id           Int      @id @default(autoincrement())
+  registration String   @unique // ex: F-GMOD
+  type         String   // ex: C172
+  flights      Flight[]
+}
+
+model Flight {
+  id            Int      @id @default(autoincrement())
+  date          DateTime
+  departure     String
+  arrival       String
+  blockTime     Int      // Durée en minutes
+  pilotFunction String   // PIC, DUAL, FI
+  landingsDay   Int      @default(0)
+  landingsNight Int      @default(0)
+  aircraftId    Int
+  aircraft      Aircraft @relation(fields: [aircraftId], references: [id])
+}
+
+model License {
+  id         Int      @id @default(autoincrement())
+  name       String   // PPL(A), SEP
+  expiryDate DateTime
+}
+
+model Medical {
+  id         Int      @id @default(autoincrement())
+  class      Int      // 1 ou 2
+  expiryDate DateTime
+}

@@ -1,0 +1,15 @@
+{
+  "name": "logbook-web",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "chart.js": "^4.0.0", 
+    "react-chartjs-2": "^5.0.0" 
+  }
+}
