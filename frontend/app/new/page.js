@@ -1,4 +1,4 @@
-import FlightForm from '../../components/FlightForm';
+import FlightForm from '../components/FlightForm';
 
 export default function NewFlightPage() {
   return (
