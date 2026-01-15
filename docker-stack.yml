@@ -19,7 +19,7 @@ services:
 
   # Backend API
   api:
-    image: logbook-backend:latest # Remplacez par votre_user/logbook-backend
+    image: sebastienlouis/logbook-backend:latest # Remplacez par votre_user/logbook-backend
     ports:
       - "3001:3001"
     environment:
@@ -37,7 +37,7 @@ services:
 
   # Frontend Web
   web:
-    image: logbook-frontend:latest # Remplacez par votre_user/logbook-frontend
+    image: sebastienlouis/logbook-frontend:latest # Remplacez par votre_user/logbook-frontend
     ports:
       - "80:3000"
     networks:
