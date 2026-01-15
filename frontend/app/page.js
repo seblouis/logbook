@@ -6,7 +6,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     // Dans Swarm, le frontend (navigateur client) doit taper sur l'IP publique ou localhost mappé
-    fetch('http://localhost:3001/api/dashboard')
+    fetch('http://192.168.22.10:3001/api/dashboard')
       .then((res) => res.json())
       .then((data) => setData(data));
   }, []);
