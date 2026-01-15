@@ -50,5 +50,46 @@ app.post('/api/flights', async (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// Route pour créer un vol
+app.post('/api/flights', async (req, res) => {
+  try {
+    const { 
+      date, departure, arrival, blockTime, 
+      pilotFunction, landingsDay, landingsNight, aircraftId 
+    } = req.body;
+
+    // Validation simple
+    if (!date || !aircraftId || !blockTime) {
+      return res.status(400).json({ error: "Champs obligatoires manquants" });
+    }
+
+    const newFlight = await prisma.flight.create({
+      data: {
+        date: new Date(date), // Conversion string -> Date Object
+        departure: departure?.toUpperCase() || "",
+        arrival: arrival?.toUpperCase() || "",
+        blockTime: parseInt(blockTime),
+        pilotFunction,
+        landingsDay: parseInt(landingsDay),
+        landingsNight: parseInt(landingsNight),
+        aircraft: {
+          connect: { id: parseInt(aircraftId) }
+        }
+      }
+    });
+
+    res.json(newFlight);
+  } catch (error) {
+    console.error("Erreur création vol:", error);
+    res.status(500).json({ error: "Impossible de créer le vol" });
+  }
+});
+
+// Route pour récupérer les avions (pour la liste déroulante du formulaire)
+app.get('/api/aircrafts', async (req, res) => {
+  const aircrafts = await prisma.aircraft.findMany();
+  res.json(aircrafts);
+});
+
 const PORT = 3001;
 app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
