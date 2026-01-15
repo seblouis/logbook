@@ -15,9 +15,10 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
+# Copie explicite du dossier prisma avant le reste
+COPY prisma ./prisma/
 COPY . .
 
-# Génération du client Prisma
 RUN npx prisma generate
 
 EXPOSE 3001
